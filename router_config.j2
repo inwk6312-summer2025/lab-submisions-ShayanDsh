@@ -1,0 +1,24 @@
+{% for router in routers %}
+hostname {{ router.hostname }}
+
+{% for interface in router.interfaces %}
+interface {{ interface.name }}
+ description {{ interface.description }}
+{% if interface.name != 'l0' %}
+ no shutdown
+{% endif %}
+{% if interface.ip %}
+ ip address {{ interface.ip }} {{ interface.subnet }}
+{% endif %}
+{% endfor %}
+
+router ospf 1
+ router-id {{ router.ospf.router_id }}
+{% for net in router.ospf.networks %}
+ network {{ net.ip }} {{ net.wildcard }} area {{ net.area }}
+{% endfor %}
+
+!
+{% endfor %}
+
+
